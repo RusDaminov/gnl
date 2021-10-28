@@ -19,5 +19,6 @@ char *get_next_line(int fd);
 
 int ft_strlen(char *s);
 
+char	*ft_substr(char const *s, unsigned int start, size_t len)ж
 
 #endif
