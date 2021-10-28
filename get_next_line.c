@@ -12,13 +12,42 @@
 
 #include "get_next_line.h"
 
-char ft_read(int fd, char *str, char *buf)
+char	*trim_end(char *str)
 {
-    int len;
+    char	*line;
+    int		len;
+
+    len = 0;
+    while (str[len] && str[len] != '\n')
+        len++;
+    if (str[len] == '\n')
+        len++;
+    line = ft_substr(str, 0, len);
+    return (line);
+}
+
+char	*trim_start(char *str)
+{
+    int		start;
+    char	*ret;
+
+    start = 0;
+    while (str[start] && str[start] != '\n')
+        start++;
+    start++;
+    ret = ft_substr(str, start, ft_strlen(str));
+    free(str);
+    return (ret);
+}
+
+char	*ft_read(int fd, char *str, char *buf)
+{
+    int	len;
 
     len = 1;
     while (!ft_strchr(str, '\n') && len != 0)
-    {    len = read(fd, buf, BUFFER_SIZE);
+    {
+        len = read(fd, buf, BUFFER_SIZE);
         if (len < 0)
         {
             free(buf);
@@ -28,56 +57,29 @@ char ft_read(int fd, char *str, char *buf)
         if (!str)
             str = ft_substr(buf, 0, len);
         else
-            str = ft_join(str, buf);
+            str = ft_strjoin(str, buf);
     }
     free(buf);
     return (str);
 }
 
-char *ft_trim_end(char *str)
+char	*get_next_line(int fd)
 {
-    char *line;
-    int len;
-
-    len = 0;
-    while (str[len] && str[len] != '\n')
-        len++;
-    if (str[len] == '\n')
-        len++;
-    line = ft_substr(str, 0, len)
-}
-
-char *ft_trim_start(char *str)
-{
-    int i;
-    char *rem;
-
-    i = 0;
-    while (str[i] && str[i] != '\n')
-        i++;
-    i++;
-    rem = ft_substr(str, i, ft_strlen(str));
-    free(str);
-    return (rem)
-}
-
-char *get_next_line(int fd)
-{
-    char *line;
-    chear *buf;
-    static char *str;
+    char		*line;
+    char		*buf;
+    static char	*str;
 
     if (fd < 0 || BUFFER_SIZE < 1)
         return (0);
-    buf = malloc(BUFFER_SIZE +1);
+    buf = malloc(BUFFER_SIZE + 1);
     if (!buf)
         return (0);
     str = ft_read(fd, str, buf);
     if (!str || str[0] == '\0')
     {
         free(str);
-        //str = 0;
-        return (0);
+        str = 0;
+        return (NULL);
     }
     line = trim_end(str);
     if (!line || line[0] == '\0')
@@ -85,5 +87,82 @@ char *get_next_line(int fd)
         free(line);
         return (0);
     }
-
+    str = trim_start(str);
+    return (line);
 }
+
+//char ft_read(int fd, char *str, char *buf)
+//{
+//    int len;
+//
+//    len = 1;
+//    while (!ft_strchr(str, '\n') && len != 0)
+//    {    len = read(fd, buf, BUFFER_SIZE);
+//        if (len < 0)
+//        {
+//            free(buf);
+//            return (0);
+//        }
+//        buf[len] = '\0';
+//        if (!str)
+//            str = ft_substr(buf, 0, len);
+//        else
+//            str = ft_strjoin(str, buf);
+//    }
+//    free(buf);
+//    return (str);
+//}
+//
+//char *ft_trim_end(char *str)
+//{
+//    char *line;
+//    int len;
+//
+//    len = 0;
+//    while (str[len] && str[len] != '\n')
+//        len++;
+//    if (str[len] == '\n')
+//        len++;
+//    line = ft_substr(str, 0, len);
+//}
+//
+//char *ft_trim_start(char *str)
+//{
+//    int i;
+//    char *rem;
+//
+//    i = 0;
+//    while (str[i] && str[i] != '\n')
+//        i++;
+//    i++;
+//    rem = ft_substr(str, i, ft_strlen(str));
+//    free(str);
+//    return (rem);
+//}
+//
+//char *get_next_line(int fd)
+//{
+//    char *line;
+//    char *buf;
+//    static char *str;
+//
+//    if (fd < 0 || BUFFER_SIZE < 1)
+//        return (0);
+//    buf = malloc(BUFFER_SIZE +1);
+//    if (!buf)
+//        return (0);
+//    str = ft_read(fd, str, buf);
+//    if (!str || str[0] == '\0')
+//    {
+//        free(str);
+//        str = 0;
+//        return (0);
+//    }
+//    line = trim_end(str);
+//    if (!line || line[0] == '\0')
+//    {
+//        free(line);
+//        return (0);
+//    }
+//
+//}
